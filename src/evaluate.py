@@ -116,16 +116,16 @@ def get_transform(dataset_name, image_size, huge_augment, horizontal_flip, rando
     elif dataset_name == 'cifar100':
         mean = [0.5071, 0.4867, 0.4408]
         std = [0.2675, 0.2565, 0.2761]
-    elif dataset_name == 'pets':
+    elif dataset_name == 'oxfordpets':
         mean = [0.4717, 0.4499, 0.3837]
         std = [0.2726, 0.2634, 0.2794]
-    elif dataset_name == 'cars':
+    elif dataset_name == 'stanfordcars':
         mean = [0.4708, 0.4602, 0.4550]
         std = [0.2892, 0.2882, 0.2968]
-    elif dataset_name == 'food':
+    elif dataset_name == 'food101':
         mean = [0.5450, 0.4435, 0.3436]
         std = [0.2695, 0.2719, 0.2766]
-    elif dataset_name == 'tiny':
+    elif dataset_name == 'tinyimagenet':
         mean = [0.4805, 0.4483, 0.3978]
         std = [0.2177, 0.2138, 0.2136]
     elif dataset_name == 'dermamnist': 
@@ -134,7 +134,7 @@ def get_transform(dataset_name, image_size, huge_augment, horizontal_flip, rando
     elif dataset_name == 'bloodmnist':
         mean = [0.7961, 0.6596, 0.6964]
         std = [0.2139, 0.2464, 0.0903]
-    elif dataset_name == 'stl':
+    elif dataset_name == 'stl10':
         mean = [0.4467, 0.4398, 0.4066]
         std = [0.2185, 0.2159, 0.2183]
     elif dataset_name == 'imagenette':
@@ -413,7 +413,7 @@ def get_synthetic_train_dataset(
 ############################################################################################################
 
 class OxfordPetsDataset(Dataset):
-    def __init__(self, root='../datasets/pets', split='train', transform=None):
+    def __init__(self, root='../datasets/oxfordpets', split='train', transform=None):
         self.split = split
         self.transform = transform
         self.data_dir = root+'/train85.pth' if split == 'train' else root+'/test15.pth'
@@ -433,7 +433,7 @@ class OxfordPetsDataset(Dataset):
 
 
 class TinyImageNetDataset(Dataset):
-    def __init__(self, root='../datasets/tiny', split='train', transform=None):
+    def __init__(self, root='../datasets/tinyimagenet', split='train', transform=None):
         self.split = split
         self.transform = transform
         self.data_dir = root+'/train' if split == 'train' else root+'/valid'
@@ -524,27 +524,27 @@ def get_real_dataset(dataset_name, image_size, huge_augment, horizontal_flip, ra
     elif dataset_name == 'cifar100':
         train_data = dset.CIFAR100(root='../datasets/cifar100', train=True, transform=training_transformations, download=True)
         test_data = dset.CIFAR100(root='../datasets/cifar100', train=False, transform=test_transformations, download=True)
-    elif dataset_name == 'pets':
-        train_data = OxfordPetsDataset(root='../datasets/pets', split='train', transform=training_transformations)
-        test_data = OxfordPetsDataset(root='../datasets/pets', split='test', transform=test_transformations)
-    elif dataset_name == 'cars':
-        train_data = dset.StanfordCars(root='../datasets/cars', split='train', transform=training_transformations, download=False) # download does not work for this dataset, it's only for backward compatibility
-        test_data = dset.StanfordCars(root='../datasets/cars', split='test', transform=test_transformations, download=False) # download does not work for this dataset, it's only for backward compatibility
-    elif dataset_name == 'food':
-        train_data = dset.Food101(root='../datasets/food', split='train', transform=training_transformations, download=True)
-        test_data = dset.Food101(root='../datasets/food', split='test', transform=test_transformations, download=True)
-    elif dataset_name == 'tiny':
-        train_data = TinyImageNetDataset(root='../datasets/tiny', split='train', transform=training_transformations)
-        test_data = TinyImageNetDataset(root='../datasets/tiny', split='valid', transform=test_transformations) # valid is the test set for Tiny ImageNet huggingface dataset
+    elif dataset_name == 'oxfordpets':
+        train_data = OxfordPetsDataset(root='../datasets/oxfordpets', split='train', transform=training_transformations)
+        test_data = OxfordPetsDataset(root='../datasets/oxfordpets', split='test', transform=test_transformations)
+    elif dataset_name == 'stanfordcars':
+        train_data = dset.StanfordCars(root='../datasets/stanfordcars', split='train', transform=training_transformations, download=False) # download does not work for this dataset, it's only for backward compatibility
+        test_data = dset.StanfordCars(root='../datasets/stanfordcars', split='test', transform=test_transformations, download=False) # download does not work for this dataset, it's only for backward compatibility
+    elif dataset_name == 'food101':
+        train_data = dset.Food101(root='../datasets/food101', split='train', transform=training_transformations, download=True)
+        test_data = dset.Food101(root='../datasets/food101', split='test', transform=test_transformations, download=True)
+    elif dataset_name == 'tinyimagenet':
+        train_data = TinyImageNetDataset(root='../datasets/tinyimagenet', split='train', transform=training_transformations)
+        test_data = TinyImageNetDataset(root='../datasets/tinyimagenet', split='valid', transform=test_transformations) # valid is the test set for Tiny ImageNet huggingface dataset
     elif dataset_name == 'dermamnist':
         train_data = DermaMNIST(root='../datasets/dermamnist', split='train', size=224, as_rgb=True, transform=training_transformations, download=True)
         test_data = DermaMNIST(root='../datasets/dermamnist', split='test', size=224, as_rgb=True, transform=test_transformations, download=True)
     elif dataset_name == 'bloodmnist':
         train_data = BloodMNIST(root='../datasets/bloodmnist', split='train', size=224, as_rgb=True, transform=training_transformations, download=True)
         test_data = BloodMNIST(root='../datasets/bloodmnist', split='test', size=224, as_rgb=True, transform=test_transformations, download=True)
-    elif dataset_name == 'stl':
-        train_data = dset.STL10(root='../datasets/stl', split='train', transform=training_transformations, download=True)
-        test_data = dset.STL10(root='../datasets/stl', split='test', transform=test_transformations, download=True)
+    elif dataset_name == 'stl10':
+        train_data = dset.STL10(root='../datasets/stl10', split='train', transform=training_transformations, download=True)
+        test_data = dset.STL10(root='../datasets/stl10', split='test', transform=test_transformations, download=True)
     elif dataset_name == 'imagenette':
         train_data = dset.Imagenette(root='../datasets/imagenette', split='train', transform=training_transformations, download=False) # for this dataset, download=True returns an error if the dataset is already downloaded
         test_data = dset.Imagenette(root='../datasets/imagenette', split='val', transform=test_transformations, download=False) # for this dataset, download=True returns an error if the dataset is already downloaded
