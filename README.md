@@ -16,6 +16,9 @@ Comprehensive experiments across 10 diverse datasets have shown that classifiers
 
 For more details, please refer to the full [MSc Thesis](https://www.politesi.polimi.it/item/preview.htm?uuid=6724f43f-b60a-4b1d-83ab-34a3a6136976) this work is based on.
 
+
+## Results
+
 For each dataset, the following plots show:
 - Which synthetic cardinality (i.e., the size of the Synthetic Training Dataset compared to the one of the Real Training Dataset) maximized each metric:
 
@@ -24,7 +27,6 @@ For each dataset, the following plots show:
 - How big was the performance gap between the Student with the highest Classification Accuracy and the Teacher (green indicates a better performance of the Student, red otherwise):
 
 ![Student vs Teacher](images/student_vs_teacher.png)
-
 
 
 ## Repository Structure
