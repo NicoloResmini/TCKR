@@ -8,7 +8,6 @@ from torchvision import datasets as dset
 from torchvision.models import efficientnet_v2_s, efficientnet_v2_m, efficientnet_v2_l, EfficientNet_V2_S_Weights, EfficientNet_V2_M_Weights, EfficientNet_V2_L_Weights
 from diffusers import AutoPipelineForText2Image
 from datasets import load_from_disk
-from medmnist import DermaMNIST, BloodMNIST
 import os
 import numpy as np
 import shutil
@@ -128,12 +127,6 @@ def get_transform(dataset_name, image_size, huge_augment, horizontal_flip, rando
     elif dataset_name == 'tinyimagenet':
         mean = [0.4805, 0.4483, 0.3978]
         std = [0.2177, 0.2138, 0.2136]
-    elif dataset_name == 'dermamnist': 
-        mean = [0.7632, 0.5381, 0.5615]
-        std = [0.0872, 0.1204, 0.1360]
-    elif dataset_name == 'bloodmnist':
-        mean = [0.7961, 0.6596, 0.6964]
-        std = [0.2139, 0.2464, 0.0903]
     elif dataset_name == 'stl10':
         mean = [0.4467, 0.4398, 0.4066]
         std = [0.2185, 0.2159, 0.2183]
@@ -536,12 +529,6 @@ def get_real_dataset(dataset_name, image_size, huge_augment, horizontal_flip, ra
     elif dataset_name == 'tinyimagenet':
         train_data = TinyImageNetDataset(root='../datasets/tinyimagenet', split='train', transform=training_transformations)
         test_data = TinyImageNetDataset(root='../datasets/tinyimagenet', split='valid', transform=test_transformations) # valid is the test set for Tiny ImageNet huggingface dataset
-    elif dataset_name == 'dermamnist':
-        train_data = DermaMNIST(root='../datasets/dermamnist', split='train', size=224, as_rgb=True, transform=training_transformations, download=True)
-        test_data = DermaMNIST(root='../datasets/dermamnist', split='test', size=224, as_rgb=True, transform=test_transformations, download=True)
-    elif dataset_name == 'bloodmnist':
-        train_data = BloodMNIST(root='../datasets/bloodmnist', split='train', size=224, as_rgb=True, transform=training_transformations, download=True)
-        test_data = BloodMNIST(root='../datasets/bloodmnist', split='test', size=224, as_rgb=True, transform=test_transformations, download=True)
     elif dataset_name == 'stl10':
         train_data = dset.STL10(root='../datasets/stl10', split='train', transform=training_transformations, download=True)
         test_data = dset.STL10(root='../datasets/stl10', split='test', transform=test_transformations, download=True)
@@ -810,10 +797,6 @@ def train_epoch(
         inputs, labels = inputs.float().to(device), labels.to(device)
         optimizer.zero_grad()
 
-        # Squeeze (if not already done in collate_fn) for dermamnist or bloodmnist: from shape [batch_size, 1] to shape [batch_size]
-        if not cutmix_or_mixup and dataset_name in ['dermamnist', 'bloodmnist'] and labels.dim() == 2:
-            labels = labels.squeeze(1)
-
         # Produce the soft-label (if requested) for the synthetic train dataset
         if use_soft_labels and teacher_classifier is not None:
             with torch.no_grad():
@@ -860,10 +843,6 @@ def test_epoch(
     with torch.no_grad():
         for inputs, labels in test_dataloader:
             inputs, labels = inputs.float().to(device), labels.to(device)
-
-            # Squeeze only for dermamnist or bloodmnist: from shape [batch_size, 1] to shape [batch_size]
-            if dataset_name in ['dermamnist', 'bloodmnist'] and labels.dim() == 2:
-                labels = labels.squeeze(1)
             
             outputs = model(inputs)
             loss = criterion(outputs, labels)
@@ -978,12 +957,7 @@ def run_script(
         logger.info(f"RAM usage after retrieving the real dataset from disk: {get_memory_usage():.2f} GB\n")
 
         # Get the number of classes and the number of synthetic samples we want to have
-        if dataset_name == 'dermamnist': # since the medmnist datasets don't have the "classes" attribute
-            num_classes = 7
-        elif dataset_name == 'bloodmnist': # since the medmnist datasets don't have the "classes" attribute
-            num_classes = 8
-        else:
-            num_classes = len(train_dataset_real.classes)
+        num_classes = len(train_dataset_real.classes)
         num_synthetic_samples = int(len(train_dataset_real) * synthetic_to_real_train_dataset_ratio)
         logger.info(f"Lenght of the synthetic dataset: {num_synthetic_samples}\n")
 
@@ -1005,8 +979,6 @@ def run_script(
 
             def collate_fn(batch):
                 images, labels = default_collate(batch)
-                if dataset_name in ['dermamnist', 'bloodmnist'] and labels.dim() == 2:
-                    labels = labels.squeeze(1)
                 return advanced_transform(images, labels)
 
             cutmix_or_mixup = True

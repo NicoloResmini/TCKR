@@ -15,7 +15,7 @@
 # limitations under the License.
 
 # NOTE: This script is a modified version of the `train_text_to_image_lora.py` script from the `diffusers` library:
-# only the add_prompt_column() function was added to the script to allow the use of custom prompts in the fine-tuning.
+# mainly, the add_prompt_column() function was added to the script to allow the use of custom prompts in the fine-tuning.
 
 """LoRA Fine-tuning script for Stable Diffusion""" 
 
@@ -660,29 +660,6 @@ def main():
                     class_name = "crab"
             elif args.dataset_name == "Isamu136/oxford_pets_with_l14_emb":
                 class_name = example["label"]
-            elif args.dataset_name == "danjacobellis/dermamnist_224":
-                label_mapping = {
-                    0: "actinic keratoses and intraepithelial carcinoma",
-                    1: "basal cell carcinoma",
-                    2: "benign keratosis-like lesions",
-                    3: "dermatofibroma",
-                    4: "melanoma",
-                    5: "melanocytic nevi",
-                    6: "vascular lesions",
-                }
-                class_name = label_mapping[example["label"][0]] # The label is a list with one element
-            elif args.dataset_name == "danjacobellis/bloodmnist_224":
-                label_mapping = {
-                    0: "basophil",
-                    1: "eosinophil",
-                    2: "erythroblast",
-                    3: "immature granulocytes(myelocytes, metamyelocytes and promyelocytes)",
-                    4: "lymphocyte",
-                    5: "monocyte",
-                    6: "neutrophil",
-                    7: "platelet",
-                }
-                class_name = label_mapping[example["label"][0]] # The label is a list with one element
             else:
                 raise ValueError(f"Dataset '{args.dataset_name}' not implemented in the finetuning script for captions.")
         
