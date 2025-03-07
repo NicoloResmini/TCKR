@@ -49,21 +49,21 @@ For each dataset, the following plots show:
 
 1. **Clone the repository:**
 
-   ```bash
+   ```
    git clone <repository_url>
    cd TCKR
    ```
 
 2. **Create and activate a new virtual environment:**
 
-   ```bash
+   ```
    python3 -m venv venv
    source venv/bin/activate # On Windows use: venv\Scripts\activate
    ```
 
 3. **Install the required dependencies:**
 
-   ```bash
+   ```
     pip install -r requirements.txt
     ```
 
