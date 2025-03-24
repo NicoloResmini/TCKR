@@ -22,11 +22,11 @@ For more details, please refer to the full [MSc Thesis](https://www.politesi.pol
 For each dataset, the following plots show:
 - Which synthetic cardinality (i.e., the size of the Synthetic Training Dataset compared to the one of the Real Training Dataset) maximized each metric:
 
-![Best Cardinality for Metric](images/metrics_best_cardinality.png)
+![Best Cardinality for Metric](images/metrics_best_cardinality.pdf)
 
 - How big was the performance gap between the Student with the highest Classification Accuracy and the Teacher (green indicates a better performance of the Student, red otherwise):
 
-![Student vs Teacher](images/student_vs_teacher.png)
+![Student vs Teacher](images/student_vs_teacher.pdf)
 
 
 ## Repository Structure
